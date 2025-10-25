@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Development Learning Platform</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: var(--secondary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .progress-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 4px;
+            width: 100%;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 4px;
+            width: 20%;
+            background: var(--primary);
+            z-index: 2;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-step {
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 45px;
+            font-size: 0.9rem;
+            color: var(--dark);
+            white-space: nowrap;
+        }
+        
+        .section {
+            display: none;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tool-card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .tool-card h3 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .tool-card p {
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
+        .feature-demo {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 968px) {
+            .demo-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .demo-preview {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-height: 300px;
+        }
+        
+        .code-editor {
+            background: #2d2d2d;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .editor-header {
+            background: #1e1e1e;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #ccc;
+        }
+        
+        .editor-actions button {
+            background: #3c3c3c;
+            border: none;
+            color: #ccc;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .editor-actions button:hover {
+            background: #4c4c4c;
+        }
+        
+        .editor-content {
+            padding: 1rem;
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            min-height: 300px;
+            overflow: auto;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        
+        .feature-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        button.success {
+            background: var(--success);
+        }
+        
+        button.success:hover {
+            background: #27ae60;
+        }
+        
+        button.warning {
+            background: var(--warning);
+        }
+        
+        button.warning:hover {
+            background: #e67e22;
+        }
+        
+        button.danger {
+            background: var(--accent);
+        }
+        
+        button.danger:hover {
+            background: #c0392b;
+        }
+        
+        button.secondary {
+            background: var(--secondary);
+        }
+        
+        button.secondary:hover {
+            background: #1a252f;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .status-online {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+        
+        .status-offline {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--accent);
+        }
+        
+        .location-data, .camera-preview, .audio-visualizer {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            min-height: 150px;
+        }
+        
+        .camera-preview, .audio-visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            color: white;
+        }
+        
+        .coordinates {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-comment {
+            color: #6a9955;
+        }
+        
+        .code-keyword {
+            color: #569cd6;
+        }
+        
+        .code-string {
+            color: #ce9178;
+        }
+        
+        .code-function {
+            color: #dcdcaa;
+        }
+        
+        .practice-area {
+            background: #fff9e6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .practice-task {
+            margin-bottom: 1rem;
+        }
+        
+        .practice-editor {
+            background: #2d2d2d;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .practice-output {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            min-height: 100px;
+        }
+        
+        .question-area {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .question {
+            margin-bottom: 1.5rem;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+        
+        .option {
+            padding: 0.8rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+        }
+        
+        .option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .progress-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .progress-bar::before, .progress-bar::after {
+                display: none;
+            }
+            
+            .step-label {
+                position: static;
+                margin-top: 0.5rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mobile Development Learning Platform</h1>
+            <p class="tagline">Master mobile app development with real device features and hands-on practice</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-step active">1</div>
+                <div class="progress-step">2</div>
+                <div class="progress-step">3</div>
+                <div class="progress-step">4</div>
+                <div class="step-label">Tools & Concepts</div>
+                <div class="step-label">Device Features</div>
+                <div class="step-label">Practice</div>
+                <div class="step-label">Assessment</div>
+            </div>
+        </div>
+        
+        <!-- Section 1: Tools & Concepts -->
+        <section id="section-1" class="section active">
+            <h2>Mobile Development Tools & Concepts</h2>
+            <p>Learn about the essential tools, languages, and frameworks for mobile development.</p>
+            
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>Development Environments</h3>
+                    <p><strong>Android Studio</strong> - Official IDE for Android development</p>
+                    <p><strong>Xcode</strong> - Apple's IDE for iOS/macOS development</p>
+                    <p><strong>VS Code</strong> - Lightweight editor for cross-platform development</p>
+                </div>
+                
+                <div class="tool-card">
+                    <h3>Programming Languages</h3>
+                    <p><strong>Kotlin</strong> - Modern language for Android development</p>
+                    <p><strong>Swift</strong> - Apple's language for iOS development</p>
+                    <p><strong>Dart</strong> - Used with Flutter for cross-platform apps</p>
+                    <p><strong>JavaScript</strong> - For React Native apps</p>
+                </div>
+                
+                <div class="tool-card">
+                    <h3>Frameworks & Platforms</h3>
+                    <p><strong>Flutter</strong> - Google's UI toolkit for natively compiled apps</p>
+                    <p><strong>React Native</strong> - Facebook's framework using React</p>
+                    <p><strong>NativeScript</strong> - Framework for native apps with JavaScript</p>
+                </div>
+                
+                <div class="tool-card">
+                    <h3>Device APIs</h3>
+                    <p><strong>Geolocation</strong> - Access device location</p>
+                    <p><strong>Camera API</strong> - Capture photos and videos</p>
+                    <p><strong>Media APIs</strong> - Record audio and access media</p>
+                    <p><strong>Sensors</strong> - Access device sensors</p>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="secondary" disabled>Previous</button>
+                <button onclick="showSection(2)">Next: Device Features</button>
+            </div>
+        </section>
+        
+        <!-- Section 2: Device Features -->
+        <section id="section-2" class="section">
+            <h2>Device Features & APIs</h2>
+            <p>Learn how to access and use device features in your mobile applications.</p>
+            
+            <!-- Location Feature -->
+            <div class="feature-demo">
+                <h3>📍 Location Services</h3>
+                <p>Access the device's geographical location using the Geolocation API.</p>
+                
+                <div class="demo-container">
+                    <div class="demo-preview">
+                        <div id="location-status" class="status-indicator">Ready</div>
+                        <div class="location-data" id="location-data">
+                            <p>Click "Get Location" to retrieve your current coordinates.</p>
+                        </div>
+                        <div class="feature-buttons">
+                            <button class="success" onclick="getLocation()">Get Location</button>
+                            <button onclick="watchLocation()">Track Location</button>
+                            <button class="danger" onclick="stopLocationTracking()">Stop Tracking</button>
+                        </div>
+                    </div>
+                    
+                    <div class="code-editor">
+                        <div class="editor-header">
+                            <span>location.js</span>
+                            <div class="editor-actions">
+                                <button onclick="runLocationCode()">Run</button>
+                                <button onclick="copyLocationCode()">Copy</button>
+                            </div>
+                        </div>
+                        <div class="editor-content">
+<span class="code-comment">// Get current location</span>
+<span class="code-keyword">function</span> <span class="code-function">getLocation</span>() {
+  <span class="code-keyword">if</span> (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      <span class="code-function">showPosition</span>,
+      <span class="code-function">handleLocationError</span>,
+      { 
+        enableHighAccuracy: <span class="code-keyword">true</span>,
+        timeout: <span class="code-number">10000</span>,
+        maximumAge: <span class="code-number">60000</span>
+      }
+    );
+  } <span class="code-keyword">else</span> {
+    alert(<span class="code-string">"Geolocation is not supported"</span>);
+  }
+}
+
+<span class="code-comment">// Show position data</span>
+<span class="code-keyword">function</span> <span class="code-function">showPosition</span>(position) {
+  <span class="code-keyword">const</span> lat = position.coords.latitude;
+  <span class="code-keyword">const</span> lng = position.coords.longitude;
+  <span class="code-keyword">const</span> accuracy = position.coords.accuracy;
+  
+  document.getElementById(<span class="code-string">'location-data'</span>).innerHTML = \`
+    &lt;div class="coordinates"&gt;Latitude: \${lat.toFixed(6)}&lt;/div&gt;
+    &lt;div class="coordinates"&gt;Longitude: \${lng.toFixed(6)}&lt;/div&gt;
+    &lt;div&gt;Accuracy: \${accuracy} meters&lt;/div&gt;
+    &lt;a href="https://maps.google.com/?q=\${lat},\${lng}" target="_blank"&gt;
+      View on Google Maps
+    &lt;/a&gt;
+  \`;
+}
+
+<span class="code-comment">// Handle location errors</span>
+<span class="code-keyword">function</span> <span class="code-function">handleLocationError</span>(error) {
+  <span class="code-keyword">let</span> message = <span class="code-string">''</span>;
+  <span class="code-keyword">switch</span>(error.code) {
+    <span class="code-keyword">case</span> error.PERMISSION_DENIED:
+      message = <span class="code-string">'Location access denied'</span>;
+      <span class="code-keyword">break</span>;
+    <span class="code-keyword">case</span> error.POSITION_UNAVAILABLE:
+      message = <span class="code-string">'Location unavailable'</span>;
+      <span class="code-keyword">break</span>;
+    <span class="code-keyword">case</span> error.TIMEOUT:
+      message = <span class="code-string">'Location request timeout'</span>;
+      <span class="code-keyword">break</span>;
+  }
+  alert(<span class="code-string">'Error: '</span> + message);
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Camera Feature -->
+            <div class="feature-demo">
+                <h3>📷 Camera Access</h3>
+                <p>Access the device camera to capture photos and record videos.</p>
+                
+                <div class="demo-container">
+                    <div class="demo-preview">
+                        <div id="camera-status" class="status-indicator">Ready</div>
+                        <div class="camera-preview" id="camera-preview">
+                            Camera feed will appear here
+                        </div>
+                        <div class="feature-buttons">
+                            <button class="success" onclick="startCamera()">Start Camera</button>
+                            <button onclick="takePhoto()">Take Photo</button>
+                            <button class="warning" id="record-btn" onclick="toggleRecording()">Start Recording</button>
+                            <button class="danger" onclick="stopCamera()">Stop Camera</button>
+                        </div>
+                        <img id="captured-photo" style="display: none; max-width: 100%; margin-top: 1rem;">
+                        <video id="recorded-video" controls style="display: none; max-width: 100%; margin-top: 1rem;"></video>
+                    </div>
+                    
+                    <div class="code-editor">
+                        <div class="editor-header">
+                            <span>camera.js</span>
+                            <div class="editor-actions">
+                                <button onclick="runCameraCode()">Run</button>
+                                <button onclick="copyCameraCode()">Copy</button>
+                            </div>
+                        </div>
+                        <div class="editor-content">
+<span class="code-keyword">let</span> cameraStream = <span class="code-keyword">null</span>;
+<span class="code-keyword">let</span> mediaRecorder = <span class="code-keyword">null</span>;
+<span class="code-keyword">let</span> recordedChunks = [];
+
+<span class="code-comment">// Start camera</span>
+<span class="code-keyword">async function</span> <span class="code-function">startCamera</span>() {
+  <span class="code-keyword">try</span> {
+    cameraStream = <span class="code-keyword">await</span> navigator.mediaDevices.getUserMedia({
+      video: { 
+        width: { ideal: <span class="code-number">1280</span> },
+        height: { ideal: <span class="code-number">720</span> }
+      },
+      audio: <span class="code-keyword">true</span>
+    });
+    
+    <span class="code-keyword">const</span> video = document.createElement(<span class="code-string">'video'</span>);
+    video.srcObject = cameraStream;
+    video.autoplay = <span class="code-keyword">true</span>;
+    video.playsInline = <span class="code-keyword">true</span>;
+    
+    <span class="code-keyword">const</span> preview = document.getElementById(<span class="code-string">'camera-preview'</span>);
+    preview.innerHTML = <span class="code-string">''</span>;
+    preview.appendChild(video);
+    
+  } <span class="code-keyword">catch</span> (err) {
+    alert(<span class="code-string">'Camera error: '</span> + err.message);
+  }
+}
+
+<span class="code-comment">// Take photo</span>
+<span class="code-keyword">function</span> <span class="code-function">takePhoto</span>() {
+  <span class="code-keyword">if</span> (!cameraStream) <span class="code-keyword">return</span>;
+  
+  <span class="code-keyword">const</span> video = document.querySelector(<span class="code-string">'#camera-preview video'</span>);
+  <span class="code-keyword">const</span> canvas = document.createElement(<span class="code-string">'canvas'</span>);
+  <span class="code-keyword">const</span> context = canvas.getContext(<span class="code-string">'2d'</span>);
+  
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  context.drawImage(video, <span class="code-number">0</span>, <span class="code-number">0</span>);
+  
+  <span class="code-keyword">const</span> photo = document.getElementById(<span class="code-string">'captured-photo'</span>);
+  photo.src = canvas.toDataURL(<span class="code-string">'image/png'</span>);
+  photo.style.display = <span class="code-string">'block'</span>;
+}
+
+<span class="code-comment">// Toggle video recording</span>
+<span class="code-keyword">function</span> <span class="code-function">toggleRecording</span>() {
+  <span class="code-keyword">if</span> (!mediaRecorder || mediaRecorder.state === <span class="code-string">'inactive'</span>) {
+    startRecording();
+  } <span class="code-keyword">else</span> {
+    stopRecording();
+  }
+}
+
+<span class="code-comment">// Start recording</span>
+<span class="code-keyword">function</span> <span class="code-function">startRecording</span>() {
+  recordedChunks = [];
+  mediaRecorder = <span class="code-keyword">new</span> MediaRecorder(cameraStream);
+  
+  mediaRecorder.ondataavailable = (event) =&gt; {
+    <span class="code-keyword">if</span> (event.data.size &gt; <span class="code-number">0</span>) {
+      recordedChunks.push(event.data);
+    }
+  };
+  
+  mediaRecorder.onstop = () =&gt; {
+    <span class="code-keyword">const</span> blob = <span class="code-keyword">new</span> Blob(recordedChunks, { type: <span class="code-string">'video/webm'</span> });
+    <span class="code-keyword">const</span> video = document.getElementById(<span class="code-string">'recorded-video'</span>);
+    video.src = URL.createObjectURL(blob);
+    video.style.display = <span class="code-string">'block'</span>;
+  };
+  
+  mediaRecorder.start();
+  document.getElementById(<span class="code-string">'record-btn'</span>).textContent = <span class="code-string">'Stop Recording'</span>;
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Microphone Feature -->
+            <div class="feature-demo">
+                <h3>🎤 Microphone Access</h3>
+                <p>Access the device microphone to record audio.</p>
+                
+                <div class="demo-container">
+                    <div class="demo-preview">
+                        <div id="microphone-status" class="status-indicator">Ready</div>
+                        <div class="audio-visualizer" id="audio-visualizer">
+                            Audio visualization will appear here
+                        </div>
+                        <div class="feature-buttons">
+                            <button class="success" onclick="startMicrophone()">Start Microphone</button>
+                            <button class="warning" id="record-audio-btn" onclick="toggleAudioRecording()">Start Recording</button>
+                            <button class="danger" onclick="stopMicrophone()">Stop Microphone</button>
+                        </div>
+                        <audio id="recorded-audio" controls style="display: none; width: 100%; margin-top: 1rem;"></audio>
+                    </div>
+                    
+                    <div class="code-editor">
+                        <div class="editor-header">
+                            <span>microphone.js</span>
+                            <div class="editor-actions">
+                                <button onclick="runMicrophoneCode()">Run</button>
+                                <button onclick="copyMicrophoneCode()">Copy</button>
+                            </div>
+                        </div>
+                        <div class="editor-content">
+<span class="code-keyword">let</span> audioStream = <span class="code-keyword">null</span>;
+<span class="code-keyword">let</span> audioRecorder = <span class="code-keyword">null</span>;
+<span class="code-keyword">let</span> audioChunks = [];
+<span class="code-keyword">let</span> audioContext = <span class="code-keyword">null</span>;
+<span class="code-keyword">let</span> analyser = <span class="code-keyword">null</span>;
+
+<span class="code-comment">// Start microphone</span>
+<span class="code-keyword">async function</span> <span class="code-function">startMicrophone</span>() {
+  <span class="code-keyword">try</span> {
+    audioStream = <span class="code-keyword">await</span> navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: <span class="code-keyword">true</span>,
+        noiseSuppression: <span class="code-keyword">true</span>
+      }
+    });
+    
+    <span class="code-function">setupAudioVisualization</span>();
+    
+  } <span class="code-keyword">catch</span> (err) {
+    alert(<span class="code-string">'Microphone error: '</span> + err.message);
+  }
+}
+
+<span class="code-comment">// Setup audio visualization</span>
+<span class="code-keyword">function</span> <span class="code-function">setupAudioVisualization</span>() {
+  audioContext = <span class="code-keyword">new</span> (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioContext.createAnalyser();
+  <span class="code-keyword">const</span> source = audioContext.createMediaStreamSource(audioStream);
+  source.connect(analyser);
+  
+  analyser.fftSize = <span class="code-number">256</span>;
+  <span class="code-keyword">const</span> bufferLength = analyser.frequencyBinCount;
+  <span class="code-keyword">const</span> dataArray = <span class="code-keyword">new</span> Uint8Array(bufferLength);
+  
+  <span class="code-keyword">const</span> canvas = document.createElement(<span class="code-string">'canvas'</span>);
+  canvas.width = <span class="code-number">400</span>;
+  canvas.height = <span class="code-number">200</span>;
+  <span class="code-keyword">const</span> ctx = canvas.getContext(<span class="code-string">'2d'</span>);
+  
+  document.getElementById(<span class="code-string">'audio-visualizer'</span>).innerHTML = <span class="code-string">''</span>;
+  document.getElementById(<span class="code-string">'audio-visualizer'</span>).appendChild(canvas);
+  
+  <span class="code-function">drawAudioVisualization</span>();
+}
+
+<span class="code-comment">// Toggle audio recording</span>
+<span class="code-keyword">function</span> <span class="code-function">toggleAudioRecording</span>() {
+  <span class="code-keyword">if</span> (!audioRecorder || audioRecorder.state === <span class="code-string">'inactive'</span>) {
+    startAudioRecording();
+  } <span class="code-keyword">else</span> {
+    stopAudioRecording();
+  }
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="secondary" onclick="showSection(1)">Previous: Tools & Concepts</button>
+                <button onclick="showSection(3)">Next: Practice</button>
+            </div>
+        </section>
+        
+        <!-- Section 3: Practice -->
+        <section id="section-3" class="section">
+            <h2>Practice & Implementation</h2>
+            <p>Practice your skills with these coding challenges and exercises.</p>
+            
+            <div class="practice-area">
+                <h3>Practice Challenge: Location Tracker App</h3>
+                <div class="practice-task">
+                    <p>Create a mobile app that:</p>
+                    <ul>
+                        <li>Gets the user's current location</li>
+                        <li>Displays coordinates on a map link</li>
+                        <li>Shows location accuracy</li>
+                        <li>Updates location every 10 seconds</li>
+                    </ul>
+                </div>
+                
+                <div class="practice-editor">
+                    <div class="editor-header">
+                        <span>practice.js</span>
+                        <div class="editor-actions">
+                            <button onclick="runPracticeCode()">Run</button>
+                            <button onclick="checkPracticeCode()">Check</button>
+                        </div>
+                    </div>
+                    <div class="editor-content" contenteditable="true" id="practice-editor">
+<span class="code-comment">// Your code here - Create a location tracker</span>
+<span class="code-keyword">let</span> watchId = <span class="code-keyword">null</span>;
+
+<span class="code-keyword">function</span> <span class="code-function">startLocationTracking</span>() {
+  <span class="code-comment">// TODO: Implement location tracking</span>
+}
+
+<span class="code-keyword">function</span> <span class="code-function">displayLocation</span>(position) {
+  <span class="code-comment">// TODO: Display location data</span>
+}
+
+<span class="code-keyword">function</span> <span class="code-function">stopLocationTracking</span>() {
+  <span class="code-comment">// TODO: Stop tracking</span>
+}
+                    </div>
+                </div>
+                
+                <div class="practice-output" id="practice-output">
+                    Output will appear here after running your code.
+                </div>
+                
+                <button onclick="showPracticeSolution()" style="margin-top: 1rem;">Show Solution</button>
+                
+                <div id="practice-solution" style="display: none; margin-top: 1rem;">
+                    <div class="code-editor">
+                        <div class="editor-header">
+                            <span>solution.js</span>
+                        </div>
+                        <div class="editor-content">
+<span class="code-keyword">let</span> watchId = <span class="code-keyword">null</span>;
+
+<span class="code-keyword">function</span> <span class="code-function">startLocationTracking</span>() {
+  <span class="code-keyword">if</span> (navigator.geolocation) {
+    watchId = navigator.geolocation.watchPosition(
+      displayLocation,
+      (error) =&gt; console.error(<span class="code-string">'Location error:'</span>, error),
+      {
+        enableHighAccuracy: <span class="code-keyword">true</span>,
+        timeout: <span class="code-number">10000</span>,
+        maximumAge: <span class="code-number">10000</span>
+      }
+    );
+  }
+}
+
+<span class="code-keyword">function</span> <span class="code-function">displayLocation</span>(position) {
+  <span class="code-keyword">const</span> lat = position.coords.latitude;
+  <span class="code-keyword">const</span> lng = position.coords.longitude;
+  <span class="code-keyword">const</span> accuracy = position.coords.accuracy;
+  
+  <span class="code-keyword">const</span> output = document.getElementById(<span class="code-string">'practice-output'</span>);
+  output.innerHTML = \`
+    &lt;div&gt;Latitude: \${lat.toFixed(6)}&lt;/div&gt;
+    &lt;div&gt;Longitude: \${lng.toFixed(6)}&lt;/div&gt;
+    &lt;div&gt;Accuracy: \${accuracy}m&lt;/div&gt;
+    &lt;div&gt;Last Update: \${<span class="code-keyword">new</span> Date().toLocaleTimeString()}&lt;/div&gt;
+    &lt;a href="https://maps.google.com/?q=\${lat},\${lng}" target="_blank"&gt;
+      View on Map
+    &lt;/a&gt;
+  \`;
+}
+
+<span class="code-keyword">function</span> <span class="code-function">stopLocationTracking</span>() {
+  <span class="code-keyword">if</span> (watchId) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = <span class="code-keyword">null</span>;
+  }
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation">
+                <button class="secondary" onclick="showSection(2)">Previous: Device Features</button>
+                <button onclick="showSection(4)">Next: Assessment</button>
+            </div>
+        </section>
+        
+        <!-- Section 4: Assessment -->
+        <section id="section-4" class="section">
+            <h2>Knowledge Assessment</h2>
+            <p>Test your understanding of mobile development concepts and device APIs.</p>
+            
+            <div class="question-area">
+                <div class="question">
+                    <h3>1. Which API is used to access device location in web applications?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this)">Location API</div>
+                        <div class="option" onclick="selectOption(this)">Geolocation API</div>
+                        <div class="option" onclick="selectOption(this)">GPS API</div>
+                        <div class="option" onclick="selectOption(this)">Navigation API</div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h3>2. What method is used to start video recording with MediaRecorder?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this)">start()</div>
+                        <div class="option" onclick="selectOption(this)">record()</div>
+                        <div class="option" onclick="selectOption(this)">begin()</div>
+                        <div class="option" onclick="selectOption(this)">capture()</div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h3>3. Which permission is required for camera access?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this)">camera</div>
+                        <div class="option" onclick="selectOption(this)">video-capture</div>
+                        <div class="option" onclick="selectOption(this)">media</div>
+                        <div class="option" onclick="selectOption(this)">No specific permission needed</div>
+                    </div>
+                </div>
+                
+                <button style="width: 100%; margin-top: 1rem;" onclick="checkAssessment()">Submit Answers</button>
+                
+                <div id="assessment-feedback" class="feedback"></div>
+            </div>
+            
+            <div class="navigation">
+                <button class="secondary" onclick="showSection(3)">Previous: Practice</button>
+                <button disabled>Complete</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Section navigation
+        function showSection(sectionNumber) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`section-${sectionNumber}`).classList.add('active');
+            
+            // Update progress bar
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const progressBar = document.querySelector('.progress-bar');
+            
+            progressSteps.forEach((step, index) => {
+                if (index < sectionNumber) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+            
+            // Update progress bar line
+            const progressPercentage = (sectionNumber - 1) / 3 * 100;
+            progressBar.style.setProperty('--progress-width', `${progressPercentage}%`);
+        }
+        
+        // Location Functions
+        let locationWatchId = null;
+        
+        function getLocation() {
+            const statusElement = document.getElementById('location-status');
+            statusElement.textContent = 'Getting location...';
+            
+            if (!navigator.geolocation) {
+                statusElement.textContent = 'Geolocation not supported';
+                return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    displayLocation(position);
+                    statusElement.textContent = 'Location acquired';
+                    statusElement.className = 'status-indicator status-online';
+                },
+                error => {
+                    handleLocationError(error);
+                    statusElement.textContent = 'Location error';
+                    statusElement.className = 'status-indicator status-offline';
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        }
+        
+        function watchLocation() {
+            const statusElement = document.getElementById('location-status');
+            statusElement.textContent = 'Tracking location...';
+            
+            if (!navigator.geolocation) {
+                statusElement.textContent = 'Geolocation not supported';
+                return;
+            }
+            
+            locationWatchId = navigator.geolocation.watchPosition(
+                position => {
+                    displayLocation(position);
+                    statusElement.textContent = 'Tracking active';
+                    statusElement.className = 'status-indicator status-online';
+                },
+                error => {
+                    handleLocationError(error);
+                    statusElement.textContent = 'Tracking error';
+                    statusElement.className = 'status-indicator status-offline';
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        function stopLocationTracking() {
+            if (locationWatchId) {
+                navigator.geolocation.clearWatch(locationWatchId);
+                locationWatchId = null;
+                document.getElementById('location-status').textContent = 'Tracking stopped';
+            }
+        }
+        
+        function displayLocation(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            
+            document.getElementById('location-data').innerHTML = `
+                <div class="coordinates">Latitude: ${latitude.toFixed(6)}</div>
+                <div class="coordinates">Longitude: ${longitude.toFixed(6)}</div>
+                <div>Accuracy: ${Math.round(accuracy)} meters</div>
+                <div>Last Updated: ${new Date().toLocaleTimeString()}</div>
+                <a href="https://maps.google.com/?q=${latitude},${longitude}" target="_blank" style="color: #3498db;">
+                    View on Google Maps
+                </a>
+            `;
+        }
+        
+        function handleLocationError(error) {
+            let message = '';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Location access denied by user';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Location information unavailable';
+                    break;
+                case error.TIMEOUT:
+                    message = 'Location request timed out';
+                    break;
+                default:
+                    message = 'An unknown error occurred';
+                    break;
+            }
+            
+            alert('Error: ' + message);
+        }
+        
+        // Camera Functions
+        let cameraStream = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+        
+        async function startCamera() {
+            const statusElement = document.getElementById('camera-status');
+            statusElement.textContent = 'Starting camera...';
+            
+            try {
+                const constraints = {
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user'
+                    },
+                    audio: true
+                };
+                
+                cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                const video = document.createElement('video');
+                video.srcObject = cameraStream;
+                video.autoplay = true;
+                video.playsInline = true;
+                
+                const preview = document.getElementById('camera-preview');
+                preview.innerHTML = '';
+                preview.appendChild(video);
+                
+                statusElement.textContent = 'Camera active';
+                statusElement.className = 'status-indicator status-online';
+                
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                statusElement.textContent = 'Camera error: ' + err.message;
+                statusElement.className = 'status-indicator status-offline';
+            }
+        }
+        
+        function takePhoto() {
+            if (!cameraStream) {
+                alert('Please start the camera first');
+                return;
+            }
+            
+            const video = document.querySelector('#camera-preview video');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+            
+            const photo = document.getElementById('captured-photo');
+            photo.src = canvas.toDataURL('image/png');
+            photo.style.display = 'block';
+            
+            document.getElementById('camera-status').textContent = 'Photo captured';
+        }
+        
+        function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+        
+        function startRecording() {
+            if (!cameraStream) {
+                alert('Please start the camera first');
+                return;
+            }
+            
+            recordedChunks = [];
+            
+            try {
+                const options = {
+                    mimeType: 'video/webm;codecs=vp9,opus'
+                };
+                
+                mediaRecorder = new MediaRecorder(cameraStream, options);
+                
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const recordedVideo = document.getElementById('recorded-video');
+                    recordedVideo.src = URL.createObjectURL(recordedBlob);
+                    recordedVideo.style.display = 'block';
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                
+                document.getElementById('record-btn').textContent = 'Stop Recording';
+                document.getElementById('record-btn').className = 'btn danger';
+                document.getElementById('camera-status').textContent = 'Recording...';
+                
+            } catch (err) {
+                console.error('Error starting recording:', err);
+                alert('Error starting recording: ' + err.message);
+            }
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                
+                document.getElementById('record-btn').textContent = 'Start Recording';
+                document.getElementById('record-btn').className = 'btn warning';
+                document.getElementById('camera-status').textContent = 'Recording stopped';
+            }
+        }
+        
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+            }
+            
+            document.getElementById('camera-preview').innerHTML = 'Camera feed will appear here';
+            document.getElementById('captured-photo').style.display = 'none';
+            document.getElementById('recorded-video').style.display = 'none';
+            document.getElementById('record-btn').textContent = 'Start Recording';
+            document.getElementById('record-btn').className = 'btn warning';
+            document.getElementById('camera-status').textContent = 'Camera stopped';
+        }
+        
+        // Microphone Functions
+        let audioStream = null;
+        let audioRecorder = null;
+        let audioChunks = [];
+        let isRecordingAudio = false;
+        let audioContext = null;
+        let analyser = null;
+        let animationId = null;
+        
+        async function startMicrophone() {
+            const statusElement = document.getElementById('microphone-status');
+            statusElement.textContent = 'Starting microphone...';
+            
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                
+                setupAudioVisualization();
+                
+                statusElement.textContent = 'Microphone active';
+                statusElement.className = 'status-indicator status-online';
+                
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                statusElement.textContent = 'Microphone error: ' + err.message;
+                statusElement.className = 'status-indicator status-offline';
+            }
+        }
+        
+        function setupAudioVisualization() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            const source = audioContext.createMediaStreamSource(audioStream);
+            source.connect(analyser);
+            
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 200;
+            const canvasCtx = canvas.getContext('2d');
+            
+            document.getElementById('audio-visualizer').innerHTML = '';
+            document.getElementById('audio-visualizer').appendChild(canvas);
+            
+            function draw() {
+                animationId = requestAnimationFrame(draw);
+                
+                analyser.getByteFrequencyData(dataArray);
+                
+                canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const barWidth = (canvas.width / bufferLength) * 2.5;
+                let barHeight;
+                let x = 0;
+                
+                for(let i = 0; i < bufferLength; i++) {
+                    barHeight = dataArray[i] / 2;
+                    
+                    canvasCtx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
+                    canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                    
+                    x += barWidth + 1;
+                }
+            }
+            
+            draw();
+        }
+        
+        function toggleAudioRecording() {
+            if (!isRecordingAudio) {
+                startAudioRecording();
+            } else {
+                stopAudioRecording();
+            }
+        }
+        
+        function startAudioRecording() {
+            if (!audioStream) {
+                alert('Please start the microphone first');
+                return;
+            }
+            
+            audioChunks = [];
+            
+            try {
+                const options = { mimeType: 'audio/webm' };
+                audioRecorder = new MediaRecorder(audioStream, options);
+                
+                audioRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                audioRecorder.onstop = () => {
+                    const recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const recordedAudio = document.getElementById('recorded-audio');
+                    recordedAudio.src = URL.createObjectURL(recordedBlob);
+                    recordedAudio.style.display = 'block';
+                };
+                
+                audioRecorder.start();
+                isRecordingAudio = true;
+                
+                document.getElementById('record-audio-btn').textContent = 'Stop Recording';
+                document.getElementById('record-audio-btn').className = 'btn danger';
+                document.getElementById('microphone-status').textContent = 'Recording...';
+            } catch (err) {
+                console.error('Error starting audio recording:', err);
+                alert('Error starting recording: ' + err.message);
+            }
+        }
+        
+        function stopAudioRecording() {
+            if (audioRecorder && isRecordingAudio) {
+                audioRecorder.stop();
+                isRecordingAudio = false;
+                
+                document.getElementById('record-audio-btn').textContent = 'Start Recording';
+                document.getElementById('record-audio-btn').className = 'btn warning';
+                document.getElementById('microphone-status').textContent = 'Recording stopped';
+            }
+        }
+        
+        function stopMicrophone() {
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
+                audioStream = null;
+            }
+            
+            if (audioRecorder && isRecordingAudio) {
+                audioRecorder.stop();
+                isRecordingAudio = false;
+            }
+            
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+            
+            document.getElementById('audio-visualizer').innerHTML = 'Audio visualization will appear here';
+            document.getElementById('recorded-audio').style.display = 'none';
+            document.getElementById('record-audio-btn').textContent = 'Start Recording';
+            document.getElementById('record-audio-btn').className = 'btn warning';
+            document.getElementById('microphone-status').textContent = 'Microphone stopped';
+        }
+        
+        // Practice Functions
+        function runPracticeCode() {
+            const code = document.getElementById('practice-editor').textContent;
+            const output = document.getElementById('practice-output');
+            
+            try {
+                // Create a function from the code and execute it
+                const func = new Function(code);
+                func();
+                output.textContent = 'Code executed successfully!';
+                output.style.color = 'green';
+            } catch (error) {
+                output.textContent = 'Error: ' + error.message;
+                output.style.color = 'red';
+            }
+        }
+        
+        function checkPracticeCode() {
+            const code = document.getElementById('practice-editor').textContent;
+            const output = document.getElementById('practice-output');
+            
+            // Simple check for key functions
+            if (code.includes('startLocationTracking') && 
+                code.includes('displayLocation') && 
+                code.includes('stopLocationTracking')) {
+                output.textContent = 'Good job! You have the basic structure. Now implement the functionality.';
+                output.style.color = 'orange';
+            } else {
+                output.textContent = 'Make sure you implement all required functions.';
+                output.style.color = 'red';
+            }
+        }
+        
+        function showPracticeSolution() {
+            document.getElementById('practice-solution').style.display = 'block';
+        }
+        
+        // Assessment Functions
+        function selectOption(option) {
+            // Remove selected class from all options in this question
+            const options = option.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            option.classList.add('selected');
+        }
+        
+        function checkAssessment() {
+            const questions = document.querySelectorAll('.question');
+            let correctAnswers = 0;
+            
+            // Question 1 - Geolocation API is correct
+            if (questions[0].querySelectorAll('.option')[1].classList.contains('selected')) {
+                correctAnswers++;
+            }
+            
+            // Question 2 - start() is correct
+            if (questions[1].querySelectorAll('.option')[0].classList.contains('selected')) {
+                correctAnswers++;
+            }
+            
+            // Question 3 - No specific permission needed (browser handles it)
+            if (questions[2].querySelectorAll('.option')[3].classList.contains('selected')) {
+                correctAnswers++;
+            }
+            
+            const feedback = document.getElementById('assessment-feedback');
+            if (correctAnswers === questions.length) {
+                feedback.textContent = 'Excellent! You got all answers correct!';
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = `You got ${correctAnswers} out of ${questions.length} correct. Keep learning!`;
+                feedback.className = 'feedback incorrect';
+            }
+        }
+        
+        // Code run functions for examples
+        function runLocationCode() {
+            alert('Location code example is ready to use! Click "Get Location" to test it.');
+        }
+        
+        function runCameraCode() {
+            alert('Camera code example is ready to use! Click "Start Camera" to test it.');
+        }
+        
+        function runMicrophoneCode() {
+            alert('Microphone code example is ready to use! Click "Start Microphone" to test it.');
+        }
+        
+        // Copy code functions
+        function copyLocationCode() {
+            const code = document.querySelector('#section-2 .code-editor:first-child .editor-content').textContent;
+            navigator.clipboard.writeText(code);
+            alert('Location code copied to clipboard!');
+        }
+        
+        function copyCameraCode() {
+            const code = document.querySelector('#section-2 .code-editor:nth-child(2) .editor-content').textContent;
+            navigator.clipboard.writeText(code);
+            alert('Camera code copied to clipboard!');
+        }
+        
+        function copyMicrophoneCode() {
+            const code = document.querySelector('#section-2 .code-editor:nth-child(3) .editor-content').textContent;
+            navigator.clipboard.writeText(code);
+            alert('Microphone code copied to clipboard!');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up CSS for progress bar
+            const style = document.createElement('style');
+            style.textContent = `
+                .progress-bar::after {
+                    width: calc(var(--progress-width, 0) * 1%);
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
